@@ -1,4 +1,4 @@
-var games = require('./games');
+var games = require('./gamesController');
 var express = require('express');
 var router = express.Router();
 

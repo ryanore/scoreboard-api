@@ -5,37 +5,29 @@ var express   = require('express'),
     bodyParser= require('body-parser'),
     socket    = require('./socket'),
     mongoose  = require('mongoose');
-
-var app       = express(),
-var routes    = require('./modules')(app);
+var app       = express();
 
 /**
  *  Initialize Application 
- *  Once MongoDB has connected, this is called
- *  Set middleware and Listen for server
+ *  Once MongoDB has connected, this is called.
+ *  Set middleware, Listen for server, init websocket
  */
 var initApplication = function initApplication(){
 
   app.use(logger('dev'));
-
+  app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
-
   app.all('/api/v1/*', [require('./middleware/validateRequest')]);
-
   app.all('/*', [require('./middleware/cors')]);
 
-  app.use(function(req, res, next) {
-      var err = new Error('Not Found');
-      err.status = 404;
-      next(err);
-  });
+  var routes    = require('./routes')(app);
 
   app.set('port', process.env.PORT || 3000);
   var server = app.listen(app.get('port'), function() {
-      console.log('Express server listening on port ' + server.address().port);
+    console.log('Express server listening on port ' + server.address().port);
+    socket.init(server);
   });
 
-  socket.init(server);
 };
 
 
