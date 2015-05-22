@@ -2,7 +2,7 @@ var games = require('./gamesController');
 var express = require('express');
 var router = express.Router();
 
-router.get('/api/v1/games', games.getAll);
+router.get('/api/v1/games', games.list);
 
 router.get('/api/v1/game/:id', games.getOne);
 
