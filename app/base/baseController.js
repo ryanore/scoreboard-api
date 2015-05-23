@@ -1,4 +1,3 @@
-
 var BaseController = function(mod, n){
   this.model = mod;
   console.log('BASECONTROLLER ::: '+n);
@@ -63,8 +62,9 @@ BaseController.prototype = {
     this.model.findById(id, function (err, doc) {
       if (doc) {
         for(var attr in data){
-          if( data.hasOwnProperty(attr))
-          doc[attr] = data[attr]
+          if( data.hasOwnProperty(attr)){
+            doc[attr] = data[attr];
+          }
         }
         doc.save(function (err) {
           if(err) res.status(400).json(err);
