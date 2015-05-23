@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var user = require('./userController.js');
-var ejwt = require('express-jwt');
+var ejwt = require('../../middleware/jwt');
 
 router.get('/api/v1/users', user.list.bind(user));
 

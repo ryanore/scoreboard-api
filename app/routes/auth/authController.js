@@ -18,6 +18,8 @@ var generateAndSendToken = function(usr, req, res){
 
   var token = jwt.sign(user, config.secret, { expiresInMinutes: config.expiry_minutes });
 
+  // do async db operation to verify token here
+  
   return res.status(200).send(token);
 };
 
@@ -33,14 +35,16 @@ module.exports = {
   login: function(req, res){
     User.findOne({username: req.body.username}, function(err,usr){
       if( err || !usr ){
-        return sendStatus(res, 401);
-      }
-      usr.comparePassword(req.body.password, function(err, isMatch) {
-        if (err) throw err;
-        
-        if(!isMatch) 
           return res.status(401).send(err);
+      }
 
+      usr.comparePassword(req.body.password, function(err, isMatch) {
+        if (err){ 
+          throw err;
+        }
+        if(!isMatch){
+          return res.status(401).send(err);
+        }
         generateAndSendToken(usr, req, res);
       });
     });
@@ -50,6 +54,7 @@ module.exports = {
   /**
    *  Verify Token, 
    *  Split Bearer Token and verify content of the header
+   *  Verify user is in db
    *  Pass basic user info along
    */
   verifyToken: function(req, res){
@@ -67,7 +72,9 @@ module.exports = {
             return res.status(401).send(err);
           } 
           else{
-            generateAndSendToken(decoded, req, res);
+            User.findOne({username: decoded.username}, function(err,usr){
+              generateAndSendToken(decoded, req, res);
+            });
           }
         });
       } 

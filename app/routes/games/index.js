@@ -1,7 +1,7 @@
 var games = require('./gamesController');
 var express = require('express');
 var router = express.Router();
-var ejwt = require('express-jwt');
+var ejwt = require('../../middleware/jwt');
 
 
 router.get('/api/v1/games', games.list.bind(games));
