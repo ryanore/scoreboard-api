@@ -1,52 +1,81 @@
-var jwt = require('jwt-simple');
+var config = require ('../../../config/auth');
+var User = require('../../models/userModel');
+var jwt = require('jsonwebtoken');
 
-var auth = {
-    login: function(req, res) {
-        var username = req.body.username || '';
-        var password = req.body.password || '';
-        if (username == '' || password == '') {
-            res.status(401);
-            res.json({
-                "status": 401,
-                "message": "Invalid credentials"
-            });
-            return;
-        }
-        var dbUserObj = auth.validate(username, password);
-        if (!dbUserObj) { 
-            res.status(401);
-            res.json({
-                "status": 401,
-                "message": "Invalid credentials"
-            });
-            return;
-        }
-        if (dbUserObj) {
-            res.json(genToken(dbUserObj));
-        }
-    },
-    validate: function(username, password) {
-        return dbUserObj;
+
+
+/**
+ *  Private: Generate JWT token
+ *  Create Signed Token
+ *  Store Token in Mongodb with self-destruct expire
+ */
+var generateAndSendToken = function(usr, req, res){
+  var user = {
+    username: usr.username,
+    role: usr.role,
+    _id: usr._id
+  };
+
+  var token = jwt.sign(user, config.secret, { expiresInMinutes: config.expiry_minutes });
+
+  return res.status(200).send(token);
+};
+
+
+
+
+module.exports = {
+  /**
+   *  Log In
+   *  @param {String} req.body.username
+   *  @param {String} req.body.password
+   */
+  login: function(req, res){
+    User.findOne({username: req.body.username}, function(err,usr){
+      if( err || !usr ){
+        return sendStatus(res, 401);
+      }
+      usr.comparePassword(req.body.password, function(err, isMatch) {
+        if (err) throw err;
+        
+        if(!isMatch) 
+          return res.status(401).send(err);
+
+        generateAndSendToken(usr, req, res);
+      });
+    });
+  },  
+
+
+  /**
+   *  Verify Token, 
+   *  Split Bearer Token and verify content of the header
+   *  Pass basic user info along
+   */
+  verifyToken: function(req, res){
+    var token = null;
+    var parts = req.headers.authorization.split(' ');
+
+    if (parts.length == 2) {
+      var scheme = parts[0];
+      var credentials = parts[1];
+      
+      if (/^Bearer$/i.test(scheme)) {
+        token = credentials;
+        jwt.verify(token, config.secret, function(err, decoded){
+          if(err){
+            return res.status(401).send(err);
+          } 
+          else{
+            generateAndSendToken(decoded, req, res);
+          }
+        });
+      } 
+    } 
+    else{
+      console.log("No Valid authorization header...(Bearer) while verifying access_token");
+      return res.status(401).send(err);
     }
+  }
 
-}
-
-// private method
-function genToken(user) {
-    var expires = expiresIn(7); // 7 days
-    var token = jwt.encode({
-        exp: expires
-    }, require('../config/secret')());
-    return {
-        token: token,
-        expires: expires,
-        user: user
-    };
-}
-
-function expiresIn(numDays) {
-    var dateObj = new Date();
-    return dateObj.setDate(dateObj.getDate() + numDays);
-}
-
-module.exports = auth;
+};

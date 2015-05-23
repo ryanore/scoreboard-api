@@ -1,4 +1,3 @@
-
 var mongoose  = require('mongoose'),
     Schema    = mongoose.Schema,
     uniqueValidator = require('mongoose-unique-validator');
@@ -19,7 +18,7 @@ var GameSchema   = new Schema({
     name: {type: String},
     score: {type: Number}
   }],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
@@ -39,11 +38,3 @@ module.exports = {
   schema: GameSchema,
   model: mongoose.model('Game', GameSchema)
 };
-
-
-/**
- *
- * Games need
- * Owner:  the user that can update the score
- *  
- */

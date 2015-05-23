@@ -1,9 +1,11 @@
 var Game = require('../../models/gameModel').model;
 var BaseController = require('../../base/baseController');
 var nodeUtil = require('util');
+
 /**
  *  Games Controller 
  *  @extends {BaseController}
+ *  Inherits basic CRUD stuff.
  */
 var GamesController = function(model, name){
   BaseController.apply(this, arguments);

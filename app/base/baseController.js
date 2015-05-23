@@ -25,7 +25,7 @@ BaseController.prototype = {
    *  @param {Object} req.query Should describe query parameters for filtering
    */
   list: function(req, res) {
-    User.find(req.query).sort({
+    this.model.find(req.query).sort({
       'createdAt': -1
     })
     .exec(function(err, records) {
@@ -41,7 +41,7 @@ BaseController.prototype = {
    *  @param {id} req.prams.id The ID of the record is required in url
    */
   getOne: function(req, res) {
-    User.findOne({
+    this.model.findOne({
       _id: req.params.id
     })
     .exec(function(err, records){
@@ -60,7 +60,7 @@ BaseController.prototype = {
   update: function(req, res) {
     var data = req.body || {};
     var id = req.params.id;
-    User.findById(id, function (err, doc) {
+    this.model.findById(id, function (err, doc) {
       if (doc) {
         for(var attr in data){
           if( data.hasOwnProperty(attr))
@@ -81,7 +81,7 @@ BaseController.prototype = {
    *  
    */
   delete: function(req, res, next){
-    User.findOne({_id: req.params.id  }, function(err, doc) {
+    this.model.findOne({_id: req.params.id  }, function(err, doc) {
       if(err){
          res.status(400).json(err);
       } 
@@ -98,7 +98,7 @@ BaseController.prototype = {
    */
   deleteSome: function(req, res, next){
     var toDel = req.body.ids || [];
-    User.remove( {'_id':{'$in':toDel}}, function(err,del){
+    this.model.remove( {'_id':{'$in':toDel}}, function(err,del){
       if(err){
         res.status(400).json(err);
       }else{
