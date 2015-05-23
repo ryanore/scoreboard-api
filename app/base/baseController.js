@@ -13,7 +13,7 @@ BaseController.prototype = {
    */
   create: function(req, res) {
     var data = req.body || {};
-    var user = new User(data);
+    var user = new this.model(data);
     user.save(function(err) {
       if( err ) return res.status(400).json(err);
       res.json(user);
