@@ -1,10 +1,10 @@
 var express   = require('express'),
-    config    = require('../config'),
     path      = require('path'),
     bodyParser= require('body-parser'),
-    socket    = require('./socket'),
     mongoose  = require('mongoose'),
-    sanitize = require('express-sanitized');
+    sanitize = require('express-sanitized'),
+    socket    = require('./socket'),
+    config    = require('./config');
 
 var app       = express();
 
