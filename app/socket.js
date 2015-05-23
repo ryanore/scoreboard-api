@@ -7,7 +7,7 @@ module.exports = {
     var _this = this;
     
     client.on('join_game', function (data) {
-      console.log('joingame')
+      console.log('joingame');
     });
   },
   

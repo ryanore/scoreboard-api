@@ -4,7 +4,8 @@ module.exports = {
   env: 'production',
   email: {},
   db : process.env.MONGO_URI || '',
-  auth: {
+  whitelist: '*';
+    auth: {
     secret: 'salsdfk289e39qi12i12wp12kjw0',
     expiry_minutes: (60 * 3),
     expire_seconds: (60 * 60 * 3)
