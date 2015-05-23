@@ -17,12 +17,13 @@ var initApplication = function initApplication(){
   app.use(logger('dev'));
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
-  app.all('/api/v1/*', [require('./middleware/validateRequest')]);
+  
   app.all('/*', [require('./middleware/cors')]);
 
   var routes    = require('./routes')(app);
 
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', config.server.port);
+
   var server = app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + server.address().port);
     socket.init(server);
