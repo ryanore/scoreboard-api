@@ -13,9 +13,9 @@ var validateEmail = function(email) {
 var UserSchema   = new Schema({
   firstName: String,
   lastName: String,
-  superAdmin: { 
-    type: Boolean, 
-    default: false
+  access: { 
+    type: Number, 
+    default: 0
   },
   email: { 
     validate:[validateEmail, 'not valid'], 
@@ -38,7 +38,6 @@ var UserSchema   = new Schema({
     max: 20, 
     trim: true 
   },
-  role: { type: String, required: true},
   createdAt: { type: Date, default: Date.now }
 });
 

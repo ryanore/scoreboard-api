@@ -4,14 +4,14 @@ var router = express.Router();
 var ejwt = require('../../middleware/jwt');
 
 
-router.get('/api/v1/games', games.list.bind(games));
+router.get('/games', games.list.bind(games));
 
-router.get('/api/v1/game/:id', games.getOne.bind(games));
+router.get('/games/:id', games.getOne.bind(games));
 
-router.post('/api/v1/game/', ejwt, games.create.bind(games));
+router.post('/games/', ejwt, games.create.bind(games));
 
-router.put('/api/v1/game/:id', ejwt, games.update.bind(games));
+router.put('/games/:id', ejwt, games.update.bind(games));
 
-router.delete('/api/v1/game/:id',  ejwt, games.delete.bind(games));
+router.delete('/games/:id',  ejwt, games.delete.bind(games));
 
 module.exports = router;

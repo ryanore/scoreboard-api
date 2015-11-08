@@ -2,15 +2,18 @@ var express = require('express');
 var router = express.Router();
 var user = require('./userController.js');
 var ejwt = require('../../middleware/jwt');
+var cors = require('../../middleware/cors');
 
-router.get('/api/v1/users', user.list.bind(user));
+router.get('/users/:id', user.getOne.bind(user));
 
-router.get('/api/v1/user/:id', user.getOne.bind(user));
+router.get('/users/', user.list.bind(user));
 
-router.post('/api/v1/user/', user.create.bind(user));
+router.post('/users/', user.create.bind(user));
 
-router.put('/api/v1/user/:id', ejwt, user.update.bind(user));
+router.put('/users/:id', user.update.bind(user));
 
-router.delete('/api/v1/user/:id', ejwt, user.delete.bind(user));
+router.delete('/users/:id', user.delete.bind(user));
+
+router.post('/users/batch', cors, user.deleteSome.bind(user));
 
 module.exports = router;
