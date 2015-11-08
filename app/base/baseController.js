@@ -1,6 +1,8 @@
+var ObjectId = require('mongodb').ObjectID;
+
 var BaseController = function(mod, n){
   this.model = mod;
-  console.log('BASECONTROLLER ::: '+n);
+  console.log('BASECONTROLLER! ::: '+n);
 };
 
 
@@ -95,10 +97,18 @@ BaseController.prototype = {
 
   /**
    * DELETE - Delete Multipe Records
+   * Requires converting array of strings into ObjectIds
    */
   deleteSome: function(req, res, next){
-    var toDel = req.body.ids || [];
-    this.model.remove( {'_id':{'$in':toDel}}, function(err,del){
+    var objarray = [];
+    var ids = JSON.parse(req.body.ids);
+    var toDel = ids || [];
+    
+    for(var i=0; i<toDel.length; i++){
+    	objarray[i] = ObjectId(toDel[i]);
+		}
+
+    this.model.remove( { _id: {$in: objarray}}, function(err,del){
       if(err){
         res.status(400).json(err);
       }else{
