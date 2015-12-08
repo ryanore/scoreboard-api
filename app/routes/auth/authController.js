@@ -1,26 +1,30 @@
 var config = require ('../../config/auth');
-var User = require('../../models/userModel');
+var User = require('../../models/userModel').model;
 var jwt = require('jsonwebtoken');
-
-
+var Session = require('../../models/sessionModel').model;
 
 /**
- *  Private: Generate JWT token
- *  Create Signed Token
- *  Store Token in Mongodb with self-destruct expire
+ *	Private: Generate JWT token
+ *	Create Signed Token
+ *	Store Token in Mongodb with self-destruct expire
  */
 var generateAndSendToken = function(usr, req, res){
-  var user = {
-    username: usr.username,
-    role: usr.role,
-    _id: usr._id
-  };
+	console.log('GENERATE ', usr);
+	var user = {
+		username: usr.username,
+		access: usr.access,
+		_id: usr._id
+	};
+	var token = jwt.sign(user, config.secret, { expiresInMinutes: config.token_expire_minutes });
 
-  var token = jwt.sign(user, config.secret, { expiresInMinutes: config.expiry_minutes });
+	var session = new Session({
+		access_token: token
+	});
 
-  // do async db operation to verify token here
-  
-  return res.status(200).send(token);
+	session.save(function(err, s) {
+		if (err) res.send(err);
+		res.json({user: user, access_token: token});
+	});
 };
 
 
@@ -45,6 +49,7 @@ module.exports = {
         if(!isMatch){
           return res.status(401).send(err);
         }
+
         generateAndSendToken(usr, req, res);
       });
     });
@@ -73,7 +78,7 @@ module.exports = {
           } 
           else{
             User.findOne({username: decoded.username}, function(err,usr){
-              generateAndSendToken(decoded, req, res);
+              generateAndSendToken(usr, req, res);
             });
           }
         });
