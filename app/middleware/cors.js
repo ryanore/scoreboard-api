@@ -6,7 +6,7 @@ module.exports = function(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
   if (req.method == 'OPTIONS') {
-  	res.header('Access-Control-Allow-Headers', 'Authorization');
+  	res.header('Access-Control-Allow-Headers', 'Authorization, Content-type');
     res.status(200).end();
   } else {
     next();

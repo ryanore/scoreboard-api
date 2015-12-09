@@ -9,7 +9,6 @@ var Session = require('../../models/sessionModel').model;
  *	Store Token in Mongodb with self-destruct expire
  */
 var generateAndSendToken = function(usr, req, res){
-	console.log('GENERATE ', usr);
 	var user = {
 		username: usr.username,
 		access: usr.access,
@@ -26,7 +25,6 @@ var generateAndSendToken = function(usr, req, res){
 		res.json({user: user, access_token: token});
 	});
 };
-
 
 
 
