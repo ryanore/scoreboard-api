@@ -16,4 +16,8 @@ router.delete('/users/:id', user.delete.bind(user));
 
 router.post('/users/batch', cors, user.deleteSome.bind(user));
 
+router.post('/users/forgotpassword', user.forgotpassword);
+			
+router.post('/users/changepassword', user.changepassword);
+
 module.exports = router;

@@ -1,23 +1,19 @@
 var mongoose  = require('mongoose'),
-    Schema    = mongoose.Schema,
-    uniqueValidator = require('mongoose-unique-validator');
+    Schema    = mongoose.Schema;
 
 
 var GameSchema   = new Schema({
-  admins: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  owner: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   description: String,
   title: { 
     type: String, 
     required: true, 
     min: 5, 
     max: 30, 
-    unique:true, 
     trim: true 
   },  
-  teams: [{
-    name: {type: String},
-    score: {type: Number}
-  }],
+  teams: [],
+  score: {},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

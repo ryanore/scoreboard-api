@@ -44,11 +44,14 @@ BaseController.prototype = {
   getOne: function(req, res) {
     this.model.findOne({
       _id: req.params.id
+    }, {
+    	password: 0
     })
     .exec(function(err, records){
       if(err){
-         res.status(400).json(err);
+        res.status(400).json(err);
       } 
+
       res.json(records);
     });
   },
@@ -70,7 +73,9 @@ BaseController.prototype = {
         }
         doc.save(function (err) {
           if(err) res.status(400).json(err);
-          else res.json(doc);
+          var d = doc.toJSON();
+          delete d.password;
+          res.json(d);
         });
       }
     });  

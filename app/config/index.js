@@ -4,6 +4,6 @@ var confs = {
   development: require('./development')
 };
 
-var env = process.env.NODE_ENV || 'production';
+var env = process.env.NODE_ENV || 'development';
 
 module.exports = confs[env];

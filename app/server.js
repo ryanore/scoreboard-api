@@ -2,7 +2,7 @@ var express   = require('express'),
     path      = require('path'),
     bodyParser= require('body-parser'),
     mongoose  = require('mongoose'),
-    sanitize = require('express-sanitized'),
+    sanitize 	= require('express-sanitized'),
     socket    = require('./socket'),
     config    = require('./config');
 
@@ -16,19 +16,20 @@ var app       = express();
  *  If you don't need websocket  just comment this out it's init and it's require
  */
 var initApplication = function initApplication(){
+	var route, server;
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
   app.use(sanitize()); // this line follows express.bodyParser() 
+  app.set('port', config.server.port);
 
   app.all('/*', [require('./middleware/cors')]);
 
-  var routes    = require('./routes')(app);
-
-  app.set('port', config.server.port);
-
-  var server = app.listen(app.get('port'), function() {
+  // init web socket then routes
+  server = app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + server.address().port);
-    socket.init(server);
+    socket.init(server, function() {
+		  routes = require('./routes')(app);    	
+    });
   });
 
 };

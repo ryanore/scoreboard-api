@@ -14,6 +14,7 @@
     "jsonwebtoken": "^1.3.0",
     "mongoose": "~3.8.x",
     "mongoose-unique-validator": "^0.4.1",
+    "nodemailer": "^1.10.0",
     "request": "~2.36.0",
     "socket.io": "^1.3.x",
     "underscore": "^1.8.3"
