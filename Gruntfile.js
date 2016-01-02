@@ -40,7 +40,7 @@ module.exports = function(grunt) {
   grunt.registerTask('server', function (target) {
     grunt.task.run([
         'express:dev',
-        'jshint',
+       // 'jshint',
         'watch'
     ]);
   });
