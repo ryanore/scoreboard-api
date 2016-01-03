@@ -21,7 +21,6 @@ Client.prototype = {
 	 * Client has disconnected - emit internal event
 	 */
 	onDisconnect: function(socket) {
-		console.log('disconnect ');
 		this.socket.leave(this.roomId);
 		this.socket.removeAllListeners("disconnect");
   	events.emit('client_disconnect', this.socket.id);

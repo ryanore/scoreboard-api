@@ -28,6 +28,7 @@ Game.prototype = {
 		}
 		if( Object.keys(this.clients).length === 0 ){
 			GameModel.saveScore(this.roomId, Score.get(), () => {
+				events.removeAllListeners();
 				events.emit('room_empty', this.roomId);
 			});
 		}

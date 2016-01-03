@@ -13,7 +13,10 @@ var GameSchema   = new Schema({
     trim: true 
   },  
   teams: [],
-  score: {},
+  score: {
+  	type: Object,
+  	default: {}
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
