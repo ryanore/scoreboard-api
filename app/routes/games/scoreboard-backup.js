@@ -1,12 +1,14 @@
 var io = require('../../socket').io;
 var events = require('../../base/events');
+var Client = require('./client');
 var Clock = require('./game-clock');
-var Game = require('./game');
+var Game = require('../../models/gameModel').model;
+
 
 var Scoreboard = function(){
 	this.games = {};
 
-  events.on('room_empty', this.onEmptyRoom.bind(this));
+  events.on('client_disconnect', this.onClientLeave.bind(this));
 
   io.on('connection',  (connection) => {
 		this.socket = connection;
@@ -16,13 +18,15 @@ var Scoreboard = function(){
 
 
 Scoreboard.prototype = {
+
 	/**
 	 * Client Connected to socket,  create a new Client to handle its own business
 	 * @param  {String} gameId Cooresponds to mongoDb id
 	 */
 	onClientJoin: function(gameId) {
 		this.getGame(gameId, (game) => {
-			game.addClient(this.socket);
+			var client = new Client(this.socket, game);
+			game.clients[this.socket.id] = client;
 		});
 	},
 
@@ -31,10 +35,22 @@ Scoreboard.prototype = {
 	 * Client Disconnected, remove from list of active clients,
 	 * If it was the last one in the room, remove the room
 	 */
-	onEmptyRoom: function(gameId) {
-		var game = this.games[gameId];
+	onClientLeave: function(data) {
+		var game = this.games[data.gameId];
+
 		if( game ){
-			delete this.games[gameId];
+			delete game.clients[data.socketId];
+
+			if( Object.keys(game.clients).length === 0 ){
+
+				Game.saveScore(game, (err, doc) =>{
+
+					delete game;
+					if( err ){
+						console.log(err);
+					}
+				});
+			}
 		}
 	},
 
@@ -48,8 +64,9 @@ Scoreboard.prototype = {
 			next(this.games[id]);
 		}
 		else {
-			this.games[id] = new Game(id, (game) =>{
-				next(game)
+			Game.getActiveGame(id, (err,doc) => {
+				this.games[id] = doc;
+		 		next(doc);
 			});
 		}
 	}

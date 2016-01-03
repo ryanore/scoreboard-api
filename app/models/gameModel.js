@@ -35,10 +35,10 @@ GameSchema.statics.getActiveGame = function (id, cb) {
 /**
  * Just save the score of the game,  convenience
  */
-GameSchema.statics.saveScore = function(game, cb){
-	return this.findById(game._id, function (err, doc) {
+GameSchema.statics.saveScore = function(id, score, cb){
+	return this.findById(id, function (err, doc) {
 	  if (doc) {
-	    doc.score = game.score;
+	    doc.score = score;
 	    doc.save( (err) =>{
 	      if(err) console.log('ERROR SAVING SCORE');
 	      var d = doc.toJSON();

@@ -1,50 +1,38 @@
 var io = require('../../socket').io;
 var events = require('../../base/events');
-
+var score = require('./score');
 /**
  * Game Client - the user who connected.
- * Keeps track of it's own score, but updates the game model in memory
  * When it disconnects from the socket, it fires an event for the Scoreboard to handle 
  */
-var GameClient = function(socket, model){
-	this.model = model;
+var Client = function(roomId, socket){
+ 	this.roomId = roomId;
  	this.socket = socket;
-	this.socket.join(model._id);
- 	this.initSocket();
+	this.socket.join(roomId);
+	this.socket.on('disconnect', this.onDisconnect.bind(this));
+	this.socket.on('leave_game', this.onDisconnect.bind(this));
+	this.socket.on('update_score', this.onUpdateScore.bind(this));
+	io.to(socket.id).emit("joined_game", score.get()); 
 };
 
-GameClient.prototype = {
-	/**
-	 * Listen for events and tell client that they are connected.
-	 */
-	initSocket: function() {
-		this.socket.on('update_score', this.onUpdateScore.bind(this));
-		this.socket.on('disconnect', this.onDisconnect.bind(this));
-		io.to(this.socket.id).emit("joined_game", this.model.score); 
-	},
 
-	/**
-	 * Score update from client
-	 * Emit to all in room
-	 */
-	onUpdateScore: function(data) {
-		this.model.score = data.score;
-		io.sockets.in(this.model._id).emit("score_updated", this.model.score); 
-	},
-
+Client.prototype = {
 	/**
 	 * Client has disconnected - emit internal event
 	 */
 	onDisconnect: function(socket) {
-		this.socket.leave(this.model._id);
-		this.socket.removeAllListeners("news");
-  	events.emit('client_disconnect', {
-  		gameId: this.model._id, 
-  		socketId: this.socket.id
-  	});
+		console.log('disconnect ');
+		this.socket.leave(this.roomId);
+		this.socket.removeAllListeners("disconnect");
+  	events.emit('client_disconnect', this.socket.id);
+	},
+
+	onUpdateScore: function(data) {
+		score.set(data.score);
+		io.sockets.in(this.roomId).emit("score_updated", score.get()); 
 	}
 };
 
 
-module.exports = GameClient;
+module.exports = Client;
 
