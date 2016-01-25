@@ -1,5 +1,4 @@
 var mongoose = require('mongoose'),
-  redis = require('redis').createClient(),
   Schema = mongoose.Schema;
 
 var GameSchema = new Schema({
