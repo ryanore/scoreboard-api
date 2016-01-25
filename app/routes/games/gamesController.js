@@ -2,7 +2,7 @@ var Game = require('../../models/gameModel').model;
 var BaseController = require('../../base/baseController');
 var nodeUtil = require('util');
 var socket = null;
-var Scoreboard = require('./scoreboard');
+var Scoreboard = require('./scoreboard/scoreboard');
 /**
  *  Games Controller 
  *  @extends {BaseController}

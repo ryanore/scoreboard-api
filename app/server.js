@@ -16,7 +16,7 @@ var app       = express();
  *  If you don't need websocket  just comment this out it's init and it's require
  */
 var initApplication = function initApplication(){
-	var route, server;
+	var routes, server;
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
   app.use(sanitize()); // this line follows express.bodyParser() 

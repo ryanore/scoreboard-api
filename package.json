@@ -21,7 +21,7 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "dev": "grunt server"
+    "server:dev": "grunt server"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
