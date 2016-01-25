@@ -6,6 +6,7 @@
     "async": "~0.9.0",
     "bcrypt": "^0.8.0",
     "body-parser": "~1.8.x",
+    "compression": "^1.6.1",
     "express": "~4.12.x",
     "express-jwt": "^0.5.1",
     "express-sanitized": "^0.5.1",
@@ -21,7 +22,8 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "server:dev": "grunt server"
+    "server:dev": "grunt server",
+    "server:prod": "NODE_ENV=production forever app/server.js"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

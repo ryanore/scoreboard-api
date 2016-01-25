@@ -19,7 +19,7 @@ module.exports = {
   	from: 'developertestbed@gmail.com',
   	transport: getTransport()
   },
-  db : process.env.MONGO_URI || '',
+  db : process.env.MONGO_URI || 'mongodb://localhost:27017/scoreboard_api',
   whitelist: '*',
   transport: getTransport(),
   auth: {

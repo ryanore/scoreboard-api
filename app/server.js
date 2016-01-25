@@ -20,6 +20,7 @@ var initApplication = function initApplication(){
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
   app.use(sanitize()); // this line follows express.bodyParser() 
+
   app.set('port', config.server.port);
 
   app.all('/*', [require('./middleware/cors')]);
