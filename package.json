@@ -20,7 +20,7 @@
   },
   "scripts": {
     "server:dev": "grunt server",
-    "server:prod": "NODE_ENV=production forever app/server.js"
+    "server:prod": "NODE_ENV=production forever start app/server.js"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
