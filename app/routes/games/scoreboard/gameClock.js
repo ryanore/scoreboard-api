@@ -5,12 +5,10 @@ var io = require('../../../socket').io,
  * GameClock Class
  */
 var GameClock = module.exports = function(roomId, time, duration, granularity) {
-  console.log('DURATION ', duration);
   this.roomId = roomId;
   this.originalDuration = duration;
   this.duration = this.curTime = time || duration;
   this.running = false;
-  // this.granularity = granularity || 100;
   this.granularity = 100;
   this.timeout = null;
 };
@@ -18,6 +16,10 @@ var GameClock = module.exports = function(roomId, time, duration, granularity) {
 
 GameClock.prototype.tic = function() {
   io.sockets.in(this.roomId).emit("tic", this.curTime);
+};
+
+GameClock.prototype.sendState = function(st) {
+  io.sockets.in(this.roomId).emit("state", st);
 };
 
 
@@ -35,7 +37,7 @@ GameClock.prototype.setTime = function(ms) {
 GameClock.prototype.stop = function() {
   this.running = false;
   this.duration = this.curTime;
-  io.sockets.in(this.roomId).emit("state", 'paused');
+  this.sendState('paused');
 };
 
 
@@ -43,7 +45,7 @@ GameClock.prototype.reset = function() {
   this.running = false;
   this.curTime = this.duration = this.originalDuration;
   this.tic();
-  io.sockets.in(this.roomId).emit("state", 'reset');  
+  this.sendState('reset');
 };
 
 /**
@@ -51,21 +53,21 @@ GameClock.prototype.reset = function() {
  * 
  */
 GameClock.prototype.start = function() {
-  if (this.running) {
-    return false;
-  }
 
   var start = Date.now(),
     diff,
     obj,
     timer;
 
+  if (this.running) {
+    return false;
+  }
+
   clearTimeout(this.timeout);
 
   this.running = true;
 
-  io.sockets.in(this.roomId).emit("state", 'playing');
-
+  this.sendState('playing');
 
   (timer = () => {
     if (!this.running) {
@@ -75,10 +77,8 @@ GameClock.prototype.start = function() {
     this.curTime = this.duration - (((Date.now() - start)) | 0);
     
     if (this.curTime > 0) {
-      this.timeout = setTimeout(timer, this.granularity);
+      this.timeout = setTimeout(timer, 100);
     }
-    
-    console.log('this.curTime = ', this.curTime);
     
     if( this.curTime <= 0 ){
       this.running = false;
