@@ -46,29 +46,23 @@ Client.prototype.onUpdateScore = function(data) {
 
 Client.prototype.onStartClock = function() {
   if (this.clock.running) return;
-
   this.clock.start();
-
-  io.sockets.in(this.roomId).emit("state", 'playing');
 };
 
 
 Client.prototype.onStopClock = function() {
   if (!this.clock.running) return;
   this.clock.stop();
-  io.sockets.in(this.roomId).emit("state", 'paused');
 };
 
 
 Client.prototype.onResetClock = function() {
   this.clock.reset();
-  io.sockets.in(this.roomId).emit("state", 'reset');
 };
 
 
 Client.prototype.onDisconnect = function(socket) {
   this.socket.leave(this.roomId);
-  // this.socket.removeAllListeners("disconnect");
   this.emit('client_disconnect', this.socket.id);
 };
 
