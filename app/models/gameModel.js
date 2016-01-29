@@ -2,10 +2,10 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 var GameSchema = new Schema({
-  owner: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  }],
+  owner: {
+    type: Object,
+    default: {}
+  },
   description: String,
   title: {
     type: String,
